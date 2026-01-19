@@ -11,6 +11,7 @@ class TextToRecipe
     public static function handle(string $text)
     {
 
+        dd($text);
         $aiProvider = new Gemini();
 
         $aiProvider->outputFormat(AiOutputFormat::JSON)
