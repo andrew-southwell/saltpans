@@ -1,0 +1,221 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+@source '../../../../resources/views/**/*';
+
+@source '../../../../app/Filament';
+@source '../../../../resources/views/filament';
+
+
+
+
+.fi-sidebar {
+    @apply border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900;
+}
+
+.fi-sidebar-item {
+    @apply p-0 m-0 hover:bg-white! dark:hover:bg-gray-800!;
+}
+
+.fi-sidebar-item a {
+    @apply p-1 m-0 hover:bg-white! dark:hover:bg-gray-800!;
+}
+
+.fi-active>a {
+    @apply bg-white! dark:bg-gray-800!;
+}
+
+.fi-ta-text-item {
+    @apply pt-1 pb-1 m-0;
+}
+
+.fi-ta-toggle:not(.fi-inline) {
+    @apply pt-0 pb-0 m-0!;
+}
+
+.fi-ta-cell {
+    @apply pt-2 pb-2 m-0;
+}
+
+.fi-tabs {
+    @apply w-full border-0! rounded-none! shadow-none! ring-0! p-0! border-b! border-b-gray-200! dark:border-b-gray-700!;
+}
+
+.fi-ta-col-manager {
+    @apply overflow-y-scroll h-[70vh] overflow-x-hidden;
+}
+
+.fi-page-sub-navigation-tabs,
+.fi-tabs {
+    @apply w-full bg-transparent! border-b-2! border-b-gray-200! dark:border-b-gray-700!;
+}
+
+.fi-tabs .fi-tabs-item {
+    @apply bg-transparent! border-b-2! border-b-transparent rounded-none! shadow-none! ring-0! p-2!;
+}
+
+.fi-tabs .fi-tabs-item.fi-active {
+    @apply bg-transparent! border-b-2! border-b-(--primary-700)! rounded-none! shadow-none! ring-0! p-2!;
+}
+
+.fi-header-heading {
+    @apply text-gray-900! dark:text-white! text-2xl! font-semibold!;
+}
+
+.fi-ta-text-has-descriptions {
+    @apply pt-0! pb-0! gap-0!;
+}
+
+.fi-topbar-item-btn {
+    @apply p-3!
+}
+
+.fi-topbar-item.fi-active .fi-topbar-item-btn {
+    @apply bg-white/10! text-white! rounded-none!;
+}
+
+.fi-topbar-item.fi-active .fi-topbar-item-label {
+    @apply text-(--primary-700)! dark:text-(--primary-300)!;
+}
+
+.fi-topbar-item.fi-active:hover .fi-topbar-item-label {
+    @apply text-(--primary-700)! dark:text-(--primary-300)!;
+}
+
+.fi-topbar-item.fi-active {
+    @apply border-b-2 border-(--primary-700)! dark:border-(--primary-500)!;
+}
+
+.fi-topbar-item .fi-topbar-item-label {
+    @apply text-black/70! dark:text-white/70!;
+}
+
+
+.fi-topbar-item:hover .fi-topbar-item-btn {
+    @apply bg-white/10! text-black! rounded-none!;
+}
+
+.fi-topbar-item:hover .fi-topbar-item-label {
+    @apply text-black/90! dark:text-white/90!;
+}
+
+.mt-2 {
+    @apply mt-2!;
+}
+
+td a {
+    tabIndex: -1!important;
+}
+
+.fi-ta-col>.fi-ta-icon {
+    @apply py-0!;
+
+}
+
+.fi-ta-col>.fi-ta-text {
+    @apply py-0!;
+
+}
+
+.fi-ta-col>.fi-ta-text-input {
+    @apply py-0!;
+
+}
+
+.mt-4 {
+    @apply mt-4!;
+}
+
+.mt-6 {
+    @apply mt-6!;
+}
+
+.fi-ta-text-item {
+    @apply pt-0! pb-0!;
+}
+
+.big-button span {
+    @apply pl-5! pr-5! text-lg!;
+}
+
+/* .fi-tabs .fi-tabs-item {
+    @apply bg-white! border-b-2! border-b-gray-200 rounded-none! shadow-none! ring-0! p-2!;
+}
+
+.fi-tabs .fi-tabs-item.fi-active {
+    @apply bg-white! border-b-2! border-b-(--primary-700)! rounded-none! shadow-none! ring-0! p-2!;
+} */
+:root,
+:host {
+    --text-sm: 0.775rem!important;
+    --radius-sm: 0.25rem!important;
+    --radius-md: 0.25rem!important;
+    --radius-lg: 0.25rem!important;
+    --radius-xl: 0.25rem!important;
+}
+
+.fi-section-content-ctn .fi-sc-has-gap {
+    @apply gap-4!;
+}
+
+.trashed {
+    @apply bg-gray-50! hover:bg-gray-100! text-gray-300! dark:bg-gray-800! dark:hover:bg-gray-800!;
+}
+
+.trashed .fi-ta-text-item-label,
+.trashed .fi-ta-text p {
+    @apply text-gray-300! dark:text-gray-700!;
+}
+
+.right-pullout {
+    right: -600px;
+    position: fixed;
+    z-index: 30;
+    height: 100%;
+    width: 600px;
+    top: 0;
+    transition-duration: 0.1s;
+    transition-delay: 0.5s;
+}
+
+.right-pullout:hover {
+    right: 0px;
+    transition-duration: 0.5s;
+    transition-delay: 0s;
+}
+
+.pullout-tab {
+    top: 64px;
+    margin-left: -60px;
+    z-index: 9999999999;
+    position: absolute;
+    min-width: 60px;
+    height: 36px;
+    text-align: center;
+    padding: 6px;
+}
+
+.fi-page-sub-navigation-sidebar-ctn {
+    @apply bg-white dark:bg-gray-900 p-5 -m-[32px]! w-[260px] mr-0 min-h-screen border-r border-[#e9e9ea] dark:border-gray-700;
+}
+
+.fi-editable-text-entry .fi-in-entry-content-ctn {
+    border-bottom: 1px dashed #00a84859;
+    padding-bottom: 6px;
+
+}
+
+@layer utilities {
+
+    /* Temporary fix: ensures the image editor works inside the modal. Kept under utilities to avoid usin!important */
+    :is(.fi-modal>.fi-modal-window-ctn>.fi-modal-window:has(.fi-fo-file-upload-editor)) {
+        contain: unset;
+    }
+
+
+}
+
+.product-description p {
+    @apply text-sm text-gray-700 mb-3
+}

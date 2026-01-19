@@ -3,66 +3,35 @@
 @section('title', 'Home')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-    <!-- Hero Section -->
-    <div class="text-center mb-20">
-        <h1 class="text-5xl md:text-6xl lg:text-7xl font-serif text-[#1a1a1a] mb-8 leading-[1.1] font-normal">
-            Welcome to Salt Pans
-        </h1>
-        <p class="text-lg md:text-xl font-elegant text-[#666] max-w-2xl mx-auto leading-relaxed font-light">
-            Discover delicious recipes from around the world. Browse by category or explore our latest additions.
-        </p>
-    </div>
+	<div class="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+		<!-- Hero Section -->
+		<div class="mb-20 text-center">
+			<h1 class="mb-8 font-serif text-5xl font-normal leading-[1.1] text-[#1a1a1a] md:text-6xl lg:text-7xl">
+				Welcome to Salt Pans
+			</h1>
+			<p class="font-elegant mx-auto max-w-2xl text-lg font-light leading-relaxed text-[#666] md:text-xl">
+				Not your traditional recipie site, this is receipies we make and enjoy every day.
+				This site is designed to allow us to plan our weekly meals and generate a shopping list for the week ahead.
+				We hope you enjoy the recipes and find them useful.
+			</p>
+		</div>
 
-    <!-- Recipes Grid -->
-    @if($recipes->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
-            @foreach($recipes as $recipe)
-                <a href="{{ route('recipes.show', $recipe->slug) }}" 
-                   class="bg-white border border-[#e5e5e5] overflow-hidden hover:border-[#1a1a1a] transition-all duration-300 group">
-                    @if($recipe->image)
-                        <div class="aspect-video bg-[#f5f5f5] overflow-hidden">
-                            <img src="{{ $recipe->image }}" alt="{{ $recipe->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        </div>
-                    @else
-                        <div class="aspect-video bg-[#f5f5f5] flex items-center justify-center">
-                            <svg class="w-12 h-12 text-[#999]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                            </svg>
-                        </div>
-                    @endif
-                    <div class="p-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-xs font-sans font-light uppercase tracking-wider text-[#999]">
-                                {{ $recipe->category->name }}
-                            </span>
-                            <span class="text-xs font-sans font-light text-[#999]">
-                                {{ $recipe->prep_time + $recipe->cook_time }} min
-                            </span>
-                        </div>
-                        <h2 class="text-xl font-serif text-[#1a1a1a] mb-3 group-hover:text-[#666] transition-colors font-normal">
-                            {{ $recipe->title }}
-                        </h2>
-                        <p class="text-sm font-sans font-light text-[#666] line-clamp-2 leading-relaxed mb-6">
-                            {{ $recipe->description }}
-                        </p>
-                        <div class="flex items-center gap-4 text-xs font-sans font-light text-[#999] pt-6 border-t border-[#e5e5e5]">
-                            <span>{{ $recipe->servings }} servings</span>
-                        </div>
-                    </div>
-                </a>
-            @endforeach
-        </div>
+		<!-- Recipes Grid -->
+		@if ($recipes->count() > 0)
+			<div class="mb-16 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+				@foreach ($recipes as $recipe)
+					@include('recipes.partials.recipe-card', ['recipe' => $recipe])
+				@endforeach
+			</div>
 
-        <!-- Pagination -->
-        <div class="mt-16 flex justify-center">
-            {{ $recipes->links() }}
-        </div>
-    @else
-        <div class="text-center py-20">
-            <p class="text-lg font-sans font-light text-[#666]">No recipes found. Check back soon!</p>
-        </div>
-    @endif
-</div>
+			<!-- Pagination -->
+			<div class="mt-16 flex justify-center">
+				{{ $recipes->links() }}
+			</div>
+		@else
+			<div class="py-20 text-center">
+				<p class="font-sans text-lg font-light text-[#666]">No recipes found. Check back soon!</p>
+			</div>
+		@endif
+	</div>
 @endsection
-

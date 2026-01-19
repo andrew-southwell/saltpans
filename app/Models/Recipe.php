@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
 
 class Recipe extends Model
 {
@@ -14,7 +16,6 @@ class Recipe extends Model
         'title',
         'slug',
         'description',
-        'ingredients',
         'instructions',
         'prep_time',
         'cook_time',
@@ -25,7 +26,6 @@ class Recipe extends Model
     protected function casts(): array
     {
         return [
-            'ingredients' => 'array',
             'instructions' => 'array',
         ];
     }
@@ -38,12 +38,28 @@ class Recipe extends Model
             if (!isset($recipe->slug) || empty($recipe->slug)) {
                 $recipe->slug = Str::slug($recipe->title);
             }
+
+            $recipe->added_by = Auth::user()->id ?? null;
         });
 
         static::updating(function ($recipe) {
             if ($recipe->isDirty('title') && (empty($recipe->slug) || !isset($recipe->slug))) {
                 $recipe->slug = Str::slug($recipe->title);
             }
+
+            //Make sure the instructions are an array            
+            $instructions = [];
+
+            foreach ($recipe->instructions as $instruction) {
+
+                foreach (explode("\n", $instruction) as $line) {
+                    if (strlen(trim($line)) > 3) {
+                        $instructions[] = $line;
+                    }
+                }
+            }
+
+            $recipe->instructions = $instructions;
         });
     }
 
@@ -62,35 +78,8 @@ class Recipe extends Model
         )->withTimestamps();
     }
 
-    /**
-     * Attach related recipes to this recipe
-     * 
-     * @param array|int $recipeIds Array of recipe IDs or single recipe ID
-     * @return void
-     */
-    public function attachRelatedRecipes($recipeIds): void
+    public function recipeIngredients(): HasMany
     {
-        $recipeIds = is_array($recipeIds) ? $recipeIds : [$recipeIds];
-        
-        // Filter out self-reference
-        $recipeIds = array_filter($recipeIds, fn($id) => $id != $this->id);
-        
-        $this->relatedRecipes()->syncWithoutDetaching($recipeIds);
-    }
-
-    /**
-     * Sync related recipes (replace all existing with new ones)
-     * 
-     * @param array|int $recipeIds Array of recipe IDs or single recipe ID
-     * @return void
-     */
-    public function syncRelatedRecipes($recipeIds): void
-    {
-        $recipeIds = is_array($recipeIds) ? $recipeIds : [$recipeIds];
-        
-        // Filter out self-reference
-        $recipeIds = array_filter($recipeIds, fn($id) => $id != $this->id);
-        
-        $this->relatedRecipes()->sync($recipeIds);
+        return $this->hasMany(RecipeIngredient::class);
     }
 }

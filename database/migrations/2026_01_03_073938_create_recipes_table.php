@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->text('description');
-            $table->text('ingredients');
             $table->text('instructions');
             $table->integer('prep_time')->comment('Time in minutes');
             $table->integer('cook_time')->comment('Time in minutes');

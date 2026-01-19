@@ -2,9 +2,12 @@
 
 namespace App\Filament\Resources\Recipes\Pages;
 
-use App\Filament\Resources\Recipes\RecipeResource;
+use App\Models\Recipe;
+use Filament\Actions\Action;
+use App\Actions\RegenerateRecipe;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Recipes\RecipeResource;
 
 class EditRecipe extends EditRecord
 {
@@ -14,6 +17,11 @@ class EditRecipe extends EditRecord
     {
         return [
             DeleteAction::make(),
+            Action::make('regenerate')
+                ->label('Regenerate Recipe')
+                ->action(function (Recipe $recipe) {
+                    RegenerateRecipe::handle($recipe);
+                }),
         ];
     }
 }

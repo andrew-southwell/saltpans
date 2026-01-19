@@ -19,11 +19,10 @@ class RecipesTable
                     ->disk('public')
                     ->visibility('public')
                     ->circular()
-                    ->size(50),
+                    ->imageSize(50, 50),
                 TextColumn::make('title')
                     ->searchable()
-                    ->sortable()
-                    ->weight('bold'),
+                    ->sortable(),
                 TextColumn::make('category.name')
                     ->searchable()
                     ->sortable()
