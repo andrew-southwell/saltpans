@@ -41,7 +41,7 @@ class TextToRecipe
             $response = $aiProvider->ask();
 
 
-            if (empty($response['error'])) {
+            if (empty($response['error']) && !empty($response['name'])) {
 
                 $recipe = Recipe::create([
                     'title' => $response['name'],
@@ -64,7 +64,7 @@ class TextToRecipe
             return $response;
         } catch (\Exception $e) {
 
-            dd($e->getMessage(), $e->getLine(), $response);
+            dd($e->getMessage(), $e->getLine(), $response, $text);
             return [
                 'error' => $e->getMessage(),
             ];
