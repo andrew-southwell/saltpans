@@ -135,7 +135,6 @@ class Gemini
 
         if ($this->outputFormat == AiOutputFormat::JSON) {
 
-            dd($body);
             $response = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
             $response = trim($response);
             return json_decode($response, true);
