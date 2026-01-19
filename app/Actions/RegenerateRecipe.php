@@ -34,6 +34,12 @@ class RegenerateRecipe
         - Write a detailed, accurate, and informative description. The description provided has come from a competitor website so should not be used directly.
         - Use clear UK English spelling and terminology.
 
+        ## Recipe instructions requirements
+        - The instructions provided have come from a competitor website so should not be used directly.
+        - Rewrite the instructions to be more engaging and SEO friendly.
+        - The instructions can be in a different order to the original instructions so long as it makes sense
+        - Additional instructions can be added to the instructions array to make it more engaging and SEO friendly
+
         ## Output format
         - Return the final result as a JSON object with exactly five fields:
             - "name" - the recipe title as a plain string

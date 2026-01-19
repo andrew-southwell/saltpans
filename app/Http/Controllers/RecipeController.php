@@ -11,6 +11,8 @@ class RecipeController extends Controller
     {
         $recipes = Recipe::with('category')
             ->latest()
+            ->where('published', true)
+            ->where('featured', true)
             ->paginate(12);
 
         return view('recipes.index', compact('recipes'));
@@ -31,12 +33,13 @@ class RecipeController extends Controller
 
         // Find recipes that share any words in their title
         $autoRelatedRecipes = collect();
-        
+
         if (!empty($titleWords)) {
             $autoRelatedRecipes = Recipe::with('category')
                 ->where('id', '!=', $recipe->id)
                 ->whereNotIn('id', $excludeIds)
-                ->where(function($query) use ($titleWords) {
+                ->where('published', true)
+                ->where(function ($query) use ($titleWords) {
                     foreach ($titleWords as $word) {
                         $query->orWhere('title', 'like', '%' . $word . '%');
                     }
@@ -56,34 +59,38 @@ class RecipeController extends Controller
     {
         // Common stop words to filter out
         $stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'should', 'could', 'may', 'might', 'must', 'can'];
-        
+
         // Convert to lowercase and split into words
         $words = preg_split('/\s+/', strtolower($title));
-        
+
         // Filter out stop words and words shorter than 3 characters
-        $words = array_filter($words, function($word) use ($stopWords) {
+        $words = array_filter($words, function ($word) use ($stopWords) {
             $word = trim($word, '.,!?;:()[]{}"\'-');
             return strlen($word) >= 3 && !in_array($word, $stopWords);
         });
-        
+
         return array_values($words);
     }
 
     public function search(Request $request)
     {
-        $query = $request->get('q', '');
-        
+        $searchTerm = $request->get('q', '');
+
         $recipes = Recipe::with('category')
-            ->where(function($q) use ($query) {
-                $q->where('title', 'like', '%' . $query . '%')
-                  ->orWhere('description', 'like', '%' . $query . '%')
-                  ->orWhere('ingredients', 'like', '%' . $query . '%')
-                  ->orWhere('instructions', 'like', '%' . $query . '%');
+            ->where('published', true)
+            ->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                    // ->orWhere('ingredients', 'like', '%' . $query . '%')
+                    ->orWhere('instructions', 'like', '%' . $searchTerm . '%')
+                    ->orWhereHas('recipeIngredients', function ($query) use ($searchTerm) {
+                        $query->where('display_text', 'like', '%' . $searchTerm . '%');
+                    });
             })
             ->latest()
             ->paginate(12)
             ->withQueryString();
 
-        return view('recipes.search', compact('recipes', 'query'));
+        return view('recipes.search', compact('recipes', 'searchTerm'));
     }
 }

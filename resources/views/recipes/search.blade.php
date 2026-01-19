@@ -9,9 +9,9 @@
 			<h1 class="mb-8 font-serif text-5xl font-normal leading-[1.1] text-[#1a1a1a] md:text-6xl lg:text-7xl">
 				Search Results
 			</h1>
-			@if ($query)
+			@if ($searchTerm)
 				<p class="font-elegant mx-auto max-w-2xl text-lg font-light leading-relaxed text-[#666] md:text-xl">
-					Results for "<span class="font-normal text-[#1a1a1a]">{{ $query }}</span>"
+					Results for "<span class="font-normal text-[#1a1a1a]">{{ $searchTerm }}</span>"
 				</p>
 			@else
 				<p class="font-elegant mx-auto max-w-2xl text-lg font-light leading-relaxed text-[#666] md:text-xl">
@@ -23,7 +23,7 @@
 		<!-- Search Form -->
 		<div class="mx-auto mb-16 max-w-2xl">
 			<form action="{{ route('recipes.search') }}" method="GET" class="relative">
-				<input type="text" name="q" value="{{ $query }}" placeholder="Search recipes..."
+				<input type="text" name="q" value="{{ $searchTerm }}" placeholder="Search recipes..."
 					class="w-full border border-[#e5e5e5] py-4 pl-12 pr-4 font-sans text-base font-light text-[#1a1a1a] transition-colors focus:border-[#1a1a1a] focus:outline-none"
 					autocomplete="off" autofocus>
 				<svg class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 transform text-[#999]" fill="none"
@@ -79,9 +79,9 @@
 			<div class="mt-16 flex justify-center">
 				{{ $recipes->links() }}
 			</div>
-		@elseif($query)
+		@elseif($searchTerm)
 			<div class="py-20 text-center">
-				<p class="mb-4 font-sans text-lg font-light text-[#666]">No recipes found matching "{{ $query }}".</p>
+				<p class="mb-4 font-sans text-lg font-light text-[#666]">No recipes found matching "{{ $searchTerm }}".</p>
 				<p class="font-sans text-sm font-light text-[#999]">Try a different search term or <a
 						href="{{ route('recipes.index') }}" class="text-[#1a1a1a] hover:underline">browse all recipes</a>.</p>
 			</div>

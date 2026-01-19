@@ -47,7 +47,7 @@ class RecipeForm
                                             $set('slug', Str::slug($state));
                                         }
                                     }),
-                                Toggle::make('is_published')
+                                Toggle::make('published')
                                     ->default(true)
                                     ->label('Published'),
                                 Textarea::make('description')

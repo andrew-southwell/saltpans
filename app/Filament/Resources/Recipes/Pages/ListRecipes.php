@@ -35,8 +35,7 @@ class ListRecipes extends ListRecords
                 ->action(function (array $data) {
 
                     $text = PdfToText::handle(Storage::path($data['pdf']));
-                    dd($text);
-                    $recipes = TextToRecipe::handle($text);
+                    TextToRecipe::handle($text);
                 }),
             Action::make('scrape')
                 ->label('Scrape from site')

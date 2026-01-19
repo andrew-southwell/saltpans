@@ -30,40 +30,65 @@ class ScrapeFromSite
         $recipes = $xpath->query('//script[@type="application/ld+json"]');
         foreach ($recipes as $recipe) {
             $json = json_decode($recipe->textContent, true);
-            if ($json['@type'] == 'Recipe') {
 
-                $instructions = [];
-                foreach ($json['recipeInstructions'] as $instruction) {
-                    $instructions[] = $instruction['text'];
-                }
+            if (isset($json['@graph'])) {
+                $items = $json['@graph'];
+            } else {
+                $items = [$json];
+            }
 
-                if (!empty($json['image'][0]['url'])) {
 
-                    $name = Str::slug($json['name'] ?? 'Untitled') . '-' . rand(1000000, 9999999) . '.jpg';
-                    file_put_contents(storage_path('app/public/recipes/' . $name), file_get_contents($json['image'][0]['url']));
-                    $image = 'recipes/' . $name;
-                } else {
-                    $image = null;
-                }
+            foreach ($items as $json) {
+                if (isset($json['@type']) && $json['@type'] == 'Recipe') {
 
-                $recipe = Recipe::create([
-                    'title' => $json['name'] ?? 'Untitled',
-                    'slug' => Str::slug($json['name'] ?? 'Untitled'),
-                    'description' => $json['description'] ?? 'No description',
-                    'instructions' => $instructions,
-                    'prep_time' => self::parseDuration($json['prepTime'] ?? 0),
-                    'cook_time' => self::parseDuration($json['cookTime'] ?? 0),
-                    'servings' => $json['recipeYield'] ?? 0,
-                    'image' => $image,
-                    'source' => $url,
-                ]);
+                    $instructions = [];
+                    foreach ($json['recipeInstructions'] as $instruction) {
+                        $instructions[] = $instruction['text'];
+                    }
 
-                foreach ($json['recipeIngredient'] as $ingredient) {
-                    $recipe->recipeIngredients()->create([
-                        'display_text' => $ingredient,
-                        'quantity' => 1,
-                        'unit' => 'whole',
+                    if (!empty($json['image'][0]['url'])) {
+                        $image = $json['image'][0]['url'];
+                    }
+
+                    if (!empty($json['image'][0]) && is_string($json['image'][0])) {
+                        $image = $json['image'][0];
+                    }
+
+                    if (!empty($image)) {
+
+                        $name = Str::slug($json['name'] ?? 'Untitled') . '-' . rand(1000000, 9999999) . '.jpg';
+                        file_put_contents(storage_path('app/public/recipes/' . $name), file_get_contents($image));
+                        $image = 'recipes/' . $name;
+                    } else {
+                        $image = null;
+                    }
+
+                    if (!empty($json['recipeYield']) && is_array($json['recipeYield'])) {
+                        $json['recipeYield'] = $json['recipeYield'][0];
+                    }
+                    $recipe = Recipe::create([
+                        'title' => $json['name'] ?? 'Untitled',
+                        'slug' => Str::slug($json['name'] ?? 'Untitled'),
+                        'description' => $json['description'] ?? 'No description',
+                        'instructions' => $instructions,
+                        'prep_time' => self::parseDuration($json['prepTime'] ?? 0),
+                        'cook_time' => self::parseDuration($json['cookTime'] ?? 0),
+                        'servings' => $json['recipeYield'] ?? 0,
+                        'image' => $image,
+                        'source' => $url,
                     ]);
+
+
+
+                    foreach ($json['recipeIngredient'] as $ingredient) {
+                        $recipe->recipeIngredients()->create([
+                            'display_text' => $ingredient,
+                            'quantity' => 1,
+                            'unit' => 'whole',
+                        ]);
+                    }
+
+                    return;
                 }
             }
         }

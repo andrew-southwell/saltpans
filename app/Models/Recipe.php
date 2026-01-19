@@ -19,6 +19,9 @@ class Recipe extends Model
         'instructions',
         'prep_time',
         'cook_time',
+        'published',
+        'featured',
+        'source',
         'servings',
         'image',
     ];

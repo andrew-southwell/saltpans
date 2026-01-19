@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Str;
 use App\Contracts\AiProvider;
 use App\Enums\AiOutputFormat;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class Gemini
 {
@@ -15,7 +17,7 @@ class Gemini
 
     protected $authKey;
     protected $context = [];
-
+    protected $imageContext = [];
     protected $outputFormat;
     protected $identity;
 
@@ -37,6 +39,13 @@ class Gemini
     public function outputFormat(AiOutputFormat $format): static
     {
         $this->outputFormat = $format;
+
+        if ($format == AiOutputFormat::IMAGE) {
+            // $this->model = 'gemini-3-pro-image-preview';
+            $this->model = 'gemini-2.5-flash-image';
+            $this->baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/' . $this->model . ':generateContent';
+        }
+
         return $this;
     }
 
@@ -61,8 +70,17 @@ class Gemini
         return $this;
     }
 
+    public function addImageContext(string $context): static
+    {
+        $this->imageContext[] = $context;
+
+        return $this;
+    }
+
+
     public function ask()
     {
+
 
         $prompt = '';
 
@@ -80,31 +98,60 @@ class Gemini
 
         $prompt .= '# Output Format (important):' . "\n" . $this->outputFormat->getAiPrompt() . "\n\n";
 
+        $request = [
+            'contents' => [
+                [
+                    'parts' => [],
+                ],
+            ],
+
+        ];
+
+        $request['contents'][0]['parts'][]['text'] = $prompt;
+
+        if (!empty($this->imageContext)) {
+            foreach ($this->imageContext as $context) {
+                $request['contents'][0]['parts'][]['inline_data'] = [
+                    'mime_type' => 'image/jpeg',
+                    'data' => $context,
+                ];
+            }
+
+            $request['generationConfig'] = [
+                'imageConfig' => [
+                    'aspectRatio' => '1:1',
+                ]
+            ];
+        }
+
         $body = Http::timeout(120)->withHeaders([
-            'Content_Type' => 'application/json',
+            'Content-Type' => 'application/json',
             'X-goog-api-key' => $this->authKey,
         ])->post(
             $this->baseUrl,
-            [
-                'contents' => [
-                    [
-                        'parts' => [
-                            'text' => $prompt,
-                        ],
-                    ],
-                ],
-            ]
-        )->throw()->json();
+            $request
+        )->json();
 
-        $response = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
-
-        $this->response = trim($response);
 
         if ($this->outputFormat == AiOutputFormat::JSON) {
-            return json_decode($this->response, true);
+            $response = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            $response = trim($response);
+            return json_decode($response, true);
         }
 
-        return $this;
+        if ($this->outputFormat == AiOutputFormat::IMAGE) {
+
+            foreach (($body['candidates'][0]['content']['parts'] ?? []) as $part) {
+
+                if (!empty($part['inlineData'])) {
+                    return $part['inlineData']['data'];
+                }
+            }
+
+
+            dd($body);
+            return '';
+        }
     }
 
     public function getResponse(): string

@@ -10,6 +10,7 @@ enum AiOutputFormat: string
     case MARKDOWN = 'markdown';
     case CSV = 'csv';
     case SQL = 'sql';
+    case IMAGE = 'image';
 
     public function getAiPrompt(): string
     {
@@ -20,6 +21,7 @@ enum AiOutputFormat: string
             self::MARKDOWN => 'Please return the response in markdown format.',
             self::CSV => 'Please return the response in CSV format.',
             self::SQL => 'Please return the response in SQL format.',
+            self::IMAGE => 'Please return the response in image format.',
         };
     }
 }
