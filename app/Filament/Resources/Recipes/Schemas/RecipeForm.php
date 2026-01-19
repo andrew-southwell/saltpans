@@ -50,6 +50,9 @@ class RecipeForm
                                 Toggle::make('published')
                                     ->default(true)
                                     ->label('Published'),
+                                Toggle::make('featured')
+                                    ->default(false)
+                                    ->label('Featured On Homepage'),
                                 Textarea::make('description')
                                     ->required()
                                     ->rows(3)
