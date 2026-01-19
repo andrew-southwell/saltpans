@@ -64,7 +64,7 @@ class TextToRecipe
             return $response;
         } catch (\Exception $e) {
 
-            dd($e->getMessage(), $e->getLine());
+            dd($e->getMessage(), $e->getLine(), $response);
             return [
                 'error' => $e->getMessage(),
             ];
