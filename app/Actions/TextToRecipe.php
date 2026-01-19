@@ -61,8 +61,6 @@ class TextToRecipe
                 }
             }
 
-            dd($response);
-
             return $response;
         } catch (\Exception $e) {
 
