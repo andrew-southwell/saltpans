@@ -13,7 +13,6 @@ class PdfToText
             ->setPdf($pdfPath)
             ->text();
 
-        dd($text);
         return $text;
     }
 }
